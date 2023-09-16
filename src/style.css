@@ -1,0 +1,23 @@
+body {
+    margin: 1rem; padding: 1em; background-color: rgb(206, 206, 206);
+}
+
+#app {
+    display: grid;
+    grid-template-columns: repeat(8, 100px);
+    grid-template-rows: repeat(8, 100px);
+}
+
+.lightSquare,
+.darkSquare {
+    font-size: 450%;
+    text-align: center;
+}
+
+.lightSquare {
+    background-color: rgb(222, 187, 187);
+}
+
+.darkSquare {
+    background-color: darkgrey;
+}
