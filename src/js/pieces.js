@@ -7,55 +7,81 @@ const UNICODE_PIECES = {
     rook: "♜",
 };
 
-const UP = { x: 0, y: -1 };
-const DOWN = { x: 0, y: 1 };
-const LEFT = { x: -1, y: 0 };
-const RIGHT = { x: 1, y: 0 };
-const DIAGONAL_UP_LEFT = { x: -1, y: -1 };
-const DIAGONAL_UP_RIGHT = { x: 1, y: -1 };
-const DIAGONAL_DOWN_LEFT = { x: -1, y: 1 };
-const DIAGONAL_DOWN_RIGHT = { x: 1, y: 1 };
-const KNIGHT_UP_LEFT = { x: -1, y: -2 };
-const KNIGHT_UP_RIGHT = { x: 1, y: -2 };
-const KNIGHT_DOWN_LEFT = { x: -1, y: 2 };
-const KNIGHT_DOWN_RIGHT = { x: 1, y: 2 };
-const KNIGHT_LEFT_UP = { x: -2, y: -1 };
-const KNIGHT_LEFT_DOWN = { x: -2, y: 1 };
-const KNIGHT_RIGHT_UP = { x: 2, y: -1 };
-const KNIGHT_RIGHT_DOWN = { x: 2, y: 1 };
+const UP = { col: 0, row: -1 };
+const DOWN = { col: 0, row: 1 };
+const LEFT = { col: -1, row: 0 };
+const RIGHT = { col: 1, row: 0 };
+const DIAGONAL_UP_LEFT = { col: -1, row: -1 };
+const DIAGONAL_UP_RIGHT = { col: 1, row: -1 };
+const DIAGONAL_DOWN_LEFT = { col: -1, row: 1 };
+const DIAGONAL_DOWN_RIGHT = { col: 1, row: 1 };
+const KNIGHT_UP_LEFT = { col: -1, row: -2 };
+const KNIGHT_UP_RIGHT = { col: 1, row: -2 };
+const KNIGHT_DOWN_LEFT = { col: -1, row: 2 };
+const KNIGHT_DOWN_RIGHT = { col: 1, row: 2 };
+const KNIGHT_LEFT_UP = { col: -2, row: -1 };
+const KNIGHT_LEFT_DOWN = { col: -2, row: 1 };
+const KNIGHT_RIGHT_UP = { col: 2, row: -1 };
+const KNIGHT_RIGHT_DOWN = { col: 2, row: 1 };
 
 class Piece {
-    x;
-    y;
+    row;
+    col;
     color;
-    constructor(x, y, color) {
-        this.x = x;
-        this.y = y;
+    constructor(col, row, color) {
+        this.row = row;
+        this.col = col;
         this.color = color;
     }
     getPosition() {
-        return { x: this.x, y: this.y };
+        return { x: this.col, y: this.row };
     }
-    isOutOfBounds(x, y) {
-        if (x < 0 || x > 7 || y < 0 || y > 7) return true;
+    isOutOfBounds(col, row) {
+        if (col < 0 || col > 7 || row < 0 || row > 7) return true;
         return false;
     }
 }
 
 class Rook extends Piece {
     symbol = UNICODE_PIECES.rook;
-    getPossibleMoves() {
+    getPossibleMoves(currentBoard) {
         const possibleMoves = [];
-        const directions = [UP, DOWN, LEFT, RIGHT];
+        const directions = [
+            { ...UP, collided: false },
+            { ...DOWN, collided: false },
+            { ...LEFT, collided: false },
+            { ...RIGHT, collided: false },
+        ];
 
         const MIN_MOVES = 1;
         const MAX_MOVES = 8;
 
         for (let i = MIN_MOVES; i < MAX_MOVES; i++) {
-            for (const { x, y } of directions) {
-                const [newX, newY] = [this.x + x * i, this.y + y * i];
-                if (!this.isOutOfBounds(newX, newY)) {
-                    possibleMoves.push({ x: newX, y: newY });
+            for (let j = 0; j < directions.length; j++) {
+                const { col, row, collided } = directions[j];
+                if (collided) continue;
+                const [newCol, newRow] = [
+                    this.col + col * i,
+                    this.row + row * i,
+                ];
+                if (!this.isOutOfBounds(newCol, newRow)) {
+                    const tileBeingChecked = currentBoard[newRow][newCol];
+                    if (tileBeingChecked !== null) {
+                        if (tileBeingChecked.color !== this.color) {
+                            possibleMoves.push({
+                                col: newCol,
+                                row: newRow,
+                                attack: true,
+                            });
+                        }
+                        directions[j].collided = true;
+                    } else {
+                        possibleMoves.push({
+                            col: newCol,
+                            row: newRow,
+                            attack: false,
+                        });
+                    }
                 }
             }
         }
@@ -65,23 +91,44 @@ class Rook extends Piece {
 
 class Bishop extends Piece {
     symbol = UNICODE_PIECES.bishop;
-    getPossibleMoves() {
+    getPossibleMoves(currentBoard) {
         const possibleMoves = [];
         const directions = [
-            DIAGONAL_UP_LEFT,
-            DIAGONAL_UP_RIGHT,
-            DIAGONAL_DOWN_LEFT,
-            DIAGONAL_DOWN_RIGHT,
+            { ...DIAGONAL_UP_LEFT, collided: false },
+            { ...DIAGONAL_UP_RIGHT, collided: false },
+            { ...DIAGONAL_DOWN_LEFT, collided: false },
+            { ...DIAGONAL_DOWN_RIGHT, collided: false },
         ];
 
         const MIN_MOVES = 1;
         const MAX_MOVES = 8;
 
         for (let i = MIN_MOVES; i < MAX_MOVES; i++) {
-            for (const { x, y } of directions) {
-                const [newX, newY] = [this.x + x * i, this.y + y * i];
-                if (!this.isOutOfBounds(newX, newY)) {
-                    possibleMoves.push({ x: newX, y: newY });
+            for (let j = 0; j < directions.length; j++) {
+                const { col, row, collided } = directions[j];
+                if (collided) continue;
+                const [newCol, newRow] = [
+                    this.col + col * i,
+                    this.row + row * i,
+                ];
+                if (!this.isOutOfBounds(newCol, newRow)) {
+                    const tileBeingChecked = currentBoard[newRow][newCol];
+                    if (tileBeingChecked !== null) {
+                        if (tileBeingChecked.color !== this.color) {
+                            possibleMoves.push({
+                                col: newCol,
+                                row: newRow,
+                                attack: true,
+                            });
+                        }
+                        directions[j].collided = true;
+                    } else {
+                        possibleMoves.push({
+                            x: newCol,
+                            y: newRow,
+                            attack: false,
+                        });
+                    }
                 }
             }
         }
@@ -91,7 +138,7 @@ class Bishop extends Piece {
 
 class Knight extends Piece {
     symbol = UNICODE_PIECES.knight;
-    getPossibleMoves() {
+    getPossibleMoves(currentBoard) {
         const possibleMoves = [];
         const directions = [
             KNIGHT_UP_LEFT,
@@ -104,10 +151,25 @@ class Knight extends Piece {
             KNIGHT_RIGHT_DOWN,
         ];
 
-        for (const { x, y } of directions) {
-            const [newX, newY] = [this.x + x, this.y + y];
-            if (!this.isOutOfBounds(newX, newY)) {
-                possibleMoves.push({ x: newX, y: newY });
+        for (const { col, row } of directions) {
+            const [newCol, newRow] = [this.col + col, this.row + row];
+            if (!this.isOutOfBounds(newCol, newRow)) {
+                const tileBeingChecked = currentBoard[newRow][newCol];
+                if (tileBeingChecked !== null) {
+                    if (tileBeingChecked.color !== this.color) {
+                        possibleMoves.push({
+                            col: newCol,
+                            row: newRow,
+                            attack: true,
+                        });
+                    }
+                } else {
+                    possibleMoves.push({
+                        col: newCol,
+                        row: newRow,
+                        attack: false,
+                    });
+                }
             }
         }
         return possibleMoves;
@@ -116,27 +178,48 @@ class Knight extends Piece {
 
 class Queen extends Piece {
     symbol = UNICODE_PIECES.queen;
-    getPossibleMoves() {
+    getPossibleMoves(currentBoard) {
         const possibleMoves = [];
         const directions = [
-            UP,
-            DOWN,
-            LEFT,
-            RIGHT,
-            DIAGONAL_UP_LEFT,
-            DIAGONAL_UP_RIGHT,
-            DIAGONAL_DOWN_LEFT,
-            DIAGONAL_DOWN_RIGHT,
+            { ...UP, collided: false },
+            { ...DOWN, collided: false },
+            { ...LEFT, collided: false },
+            { ...RIGHT, collided: false },
+            { ...DIAGONAL_UP_LEFT, collided: false },
+            { ...DIAGONAL_UP_RIGHT, collided: false },
+            { ...DIAGONAL_DOWN_LEFT, collided: false },
+            { ...DIAGONAL_DOWN_RIGHT, collided: false },
         ];
 
         const MIN_MOVES = 1;
         const MAX_MOVES = 8;
 
         for (let i = MIN_MOVES; i < MAX_MOVES; i++) {
-            for (const { x, y } of directions) {
-                const [newX, newY] = [this.x + x * i, this.y + y * i];
-                if (!this.isOutOfBounds(newX, newY)) {
-                    possibleMoves.push({ x: newX, y: newY });
+            for (let j = 0; j < directions.length; j++) {
+                const { col, row, collided } = directions[j];
+                if (collided) continue;
+                const [newCol, newRow] = [
+                    this.col + col * i,
+                    this.row + row * i,
+                ];
+                if (!this.isOutOfBounds(newCol, newRow)) {
+                    const tileBeingChecked = currentBoard[newRow][newCol];
+                    if (tileBeingChecked !== null) {
+                        if (tileBeingChecked.color !== this.color) {
+                            possibleMoves.push({
+                                col: newCol,
+                                row: newRow,
+                                attack: true,
+                            });
+                        }
+                        directions[j].collided = true;
+                    } else {
+                        possibleMoves.push({
+                            x: newCol,
+                            y: newRow,
+                            attack: false,
+                        });
+                    }
                 }
             }
         }
@@ -146,7 +229,7 @@ class Queen extends Piece {
 
 class King extends Piece {
     symbol = UNICODE_PIECES.king;
-    getPossibleMoves() {
+    getPossibleMoves(currentBoard) {
         const possibleMoves = [];
         const directions = [
             UP,
@@ -159,10 +242,25 @@ class King extends Piece {
             DIAGONAL_DOWN_RIGHT,
         ];
 
-        for (const { x, y } of directions) {
-            const [newX, newY] = [this.x + x, this.y + y];
-            if (!this.isOutOfBounds(newX, newY)) {
-                possibleMoves.push({ x: newX, y: newY });
+        for (const { col, row } of directions) {
+            const [newCol, newRow] = [this.col + col, this.row + row];
+            if (!this.isOutOfBounds(newCol, newRow)) {
+                const tileBeingChecked = currentBoard[newRow][newCol];
+                if (tileBeingChecked !== null) {
+                    if (tileBeingChecked.color !== this.color) {
+                        possibleMoves.push({
+                            col: newCol,
+                            row: newRow,
+                            attack: true,
+                        });
+                    }
+                } else {
+                    possibleMoves.push({
+                        col: newCol,
+                        row: newRow,
+                        attack: false,
+                    });
+                }
             }
         }
         return possibleMoves;
