@@ -1,3 +1,5 @@
+///// "Nå er jeg litt kjapp her! Det skjer jo stadig vekk!" -Terje /////
+
 // model
 const app = document.getElementById("app");
 let currentPosition = [];
