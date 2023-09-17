@@ -1,23 +1,49 @@
+:root {
+    --light-tile-bg: hsl(32, 42%, 69%);
+    --dark-tile-bg: hsl(26, 35%, 14%);
+    --bg-color: hsl(0, 0%, 81%);
+    --tile-size: 100px;
+    user-select: none;
+}
+
 body {
-    margin: 1rem; padding: 1em; background-color: rgb(206, 206, 206);
+    margin: 1rem;
+    padding: 1em;
+    background-color: var(--bg-color);
 }
 
 #app {
     display: grid;
-    grid-template-columns: repeat(8, 100px);
-    grid-template-rows: repeat(8, 100px);
+    grid-template-columns: repeat(8, var(--tile-size));
+    grid-template-rows: repeat(8, var(--tile-size));
 }
 
-.lightSquare,
-.darkSquare {
+.tile {
     font-size: 450%;
     text-align: center;
+    background-color: var(--dark-tile-bg);
+}
+.tile:nth-child(even) {
+    background-color: var(--light-tile-bg);
 }
 
-.lightSquare {
-    background-color: rgb(222, 187, 187);
+.white {
+    text-shadow: 2px 2px 0 black, 2px -2px 0 black, -2px -2px 0 black,
+        -2px 2px 0 black, 2px 0 0 black, 0 -2px 0 black, -2px 0 0 black,
+        0 2px 0 black;
+    color: hsl(0, 0%, 100%);
 }
 
-.darkSquare {
-    background-color: darkgrey;
+.odd {
+    background-color: var(--light-tile-bg);
+}
+
+.odd:nth-child(even) {
+    background-color: var(--dark-tile-bg);
+}
+
+.black {
+    text-shadow: 1px 1px 0 white, 1px -1px 0 white, -1px -1px 0 white,
+        -1px 1px 0 white;
+    color: hsl(0, 0%, 0%);
 }

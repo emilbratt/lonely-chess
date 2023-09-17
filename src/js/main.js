@@ -1,16 +1,37 @@
-
 // model
-let setStartPosition = true;
-let currentPosition = {};
+const app = document.getElementById("app");
+let currentPosition = [];
+let tilesCreated = false;
 
 // view
 function updateView() {
-    if (setStartPosition) {
-        drawBoard();
-        currentPosition = generateStartPosition();
-        setStartPosition = false;
-    }
     drawCurrentPosition();
+}
+
+function createIdString(row, col) {
+    return `${row}-${col}`;
+}
+
+function createTilesHTML() {
+    for (let row = 0; row < currentPosition.length; row++) {
+        for (let col = 0; col < currentPosition[0].length; col++) {
+            tile = document.createElement("div");
+            tile.id = createIdString(row, col);
+            tile.classList.add("tile");
+            if (row % 2) tile.classList.add("odd");
+            tile.addEventListener("mousedown", () => {
+                if (currentPosition[row][col]) {
+                    console.log(currentPosition[row][col].getPossibleMoves());
+                }
+            });
+            app.append(tile);
+        }
+    }
+    tilesCreated = true;
+}
+
+function getTileElement(row, col) {
+    return document.getElementById(`${row}-${col}`);
 }
 
 // controller
@@ -20,31 +41,41 @@ function movePiece() {
 
 // helper
 function drawCurrentPosition() {
-    /* 
-     * A dictionary holds the position data for each square.
-     * Each entry is shaped like shown below.
+    /*
+     * A 2D array holds the position data for each square.
+     * Each element in the array contains one of two options:
      *
-     *  currentPosition = {
-     *      0: {'player': 'black', 'piece': 'rook'},
-     *      1: {'player': 'black', 'piece': 'knight'},
-     *      3: {..},
-     *     32: {'player': 'none'},
-     *     33: {..},
-     *     62: {'player': 'white', 'piece': 'knight'},
-     *     63: {'player': 'white', 'piece': 'rook'},
-     *  }
+     *      If there is no piece, the element is null.
      *
+     *      If there is a piece, the element is an instance of a subclass
+     *      of Piece corresponding to the piece in the square.
+     *
+     * Each instance of Piece has its own getPossibleMoves method.
+     * This method is attached to an event listener.
      */
-    for (const [index, data] of Object.entries(currentPosition)) {
-        if (data['player'] === 'none') {
-            drawBlank(index);
-        } else {
-            drawPiece(index, data['player'], getUnicodePiece(data['piece']));
+
+    if (!tilesCreated) {
+        createTilesHTML();
+    }
+    for (let row = 0; row < currentPosition.length; row++) {
+        for (let col = 0; col < currentPosition[0].length; col++) {
+            currentPiece = currentPosition[row][col];
+            if (currentPiece) {
+                const currentTile = getTileElement(row, col);
+                const pieceText = currentPiece.symbol;
+                const IS_WHITE = currentPiece.color === "white";
+                const IS_BLACK = !IS_WHITE;
+                currentTile.textContent = pieceText;
+                currentTile.classList.toggle("white", IS_WHITE);
+                currentTile.classList.toggle("black", IS_BLACK);
+            }
         }
     }
 }
 
-// entrypoint
-function main() {
+function initApp() {
+    currentPosition = createStartingPosition();
     updateView();
 }
+
+document.addEventListener("DOMContentLoaded", initApp);
