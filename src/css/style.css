@@ -23,7 +23,7 @@ body {
     text-align: center;
     background-color: var(--dark-tile-bg);
 }
-.tile:nth-child(even) {
+.tile:nth-child(odd) {
     background-color: var(--light-tile-bg);
 }
 
@@ -38,7 +38,7 @@ body {
     background-color: var(--light-tile-bg);
 }
 
-.odd:nth-child(even) {
+.odd:nth-child(odd) {
     background-color: var(--dark-tile-bg);
 }
 
