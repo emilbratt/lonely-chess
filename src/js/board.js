@@ -1,7 +1,5 @@
 const board = document.getElementById("board");
 let currentPosition = [];
-let tilesCreated = false;
-
 
 function createBackline(y, color) {
     return [
@@ -61,13 +59,16 @@ function createTilesHTML() {
             if (row % 2) tile.classList.add("odd");
             tile.addEventListener("mousedown", () => {
                 if (currentPosition[row][col]) {
-                    console.log(currentPosition[row][col].getPossibleMoves());
+                    console.log(
+                        currentPosition[row][col].getPossibleMoves(
+                            currentPosition
+                        )
+                    );
                 }
             });
             board.append(tile);
         }
     }
-    tilesCreated = true;
 }
 
 function getTileElement(row, col) {
@@ -87,10 +88,6 @@ function drawCurrentPosition() {
      * Each instance of Piece has its own getPossibleMoves method.
      * This method is attached to an event listener.
      */
-
-    if (!tilesCreated) {
-        createTilesHTML();
-    }
     for (let row = 0; row < currentPosition.length; row++) {
         for (let col = 0; col < currentPosition[0].length; col++) {
             currentPiece = currentPosition[row][col];
