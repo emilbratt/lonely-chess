@@ -1,7 +1,7 @@
 :root {
-    --light-tile-bg: hsl(32, 42%, 69%);
-    --dark-tile-bg: hsl(26, 35%, 14%);
-    --bg-color: hsl(0, 0%, 81%);
+    --light-tile-bg: hsl(205, 42%, 69%);
+    --dark-tile-bg: hsl(205, 35%, 14%);
+    --bg-color: hsl(205, 0%, 81%);
     --tile-size: 100px;
     user-select: none;
 }
