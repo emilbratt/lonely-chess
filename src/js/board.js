@@ -57,13 +57,21 @@ function createTilesHTML() {
             tile.id = createIdString(row, col);
             tile.classList.add("tile");
             if (row % 2) tile.classList.add("odd");
-            tile.addEventListener("mousedown", () => {
+            tile.addEventListener("mousedown", (event) => {
                 if (currentPosition[row][col]) {
-                    console.log(
-                        currentPosition[row][col].getPossibleMoves(
-                            currentPosition
-                        )
-                    );
+                    if (event.altKey) {
+                        // Temporary event listener for testing purposes
+                        // If you hold Alt when clicking a piece, it deletes the piece!
+                        // Used for testing collision updates for now
+                        currentPosition[row][col] = null;
+                        drawCurrentPosition();
+                    } else {
+                        console.log(
+                            currentPosition[row][col].getPossibleMoves(
+                                currentPosition
+                            )
+                        );
+                    }
                 }
             });
             board.append(tile);
@@ -90,15 +98,17 @@ function drawCurrentPosition() {
      */
     for (let row = 0; row < currentPosition.length; row++) {
         for (let col = 0; col < currentPosition[0].length; col++) {
-            currentPiece = currentPosition[row][col];
+            const currentPiece = currentPosition[row][col];
+            const currentTileElement = getTileElement(row, col);
             if (currentPiece) {
-                const currentTile = getTileElement(row, col);
                 const pieceText = currentPiece.symbol;
                 const IS_WHITE = currentPiece.color === "white";
                 const IS_BLACK = !IS_WHITE;
-                currentTile.textContent = pieceText;
-                currentTile.classList.toggle("white", IS_WHITE);
-                currentTile.classList.toggle("black", IS_BLACK);
+                currentTileElement.textContent = pieceText;
+                currentTileElement.classList.toggle("white", IS_WHITE);
+                currentTileElement.classList.toggle("black", IS_BLACK);
+            } else {
+                currentTileElement.textContent = "";
             }
         }
     }
