@@ -1,7 +1,9 @@
 # lonely-chess
 Making a chess game for fun while learning to collaborate with developers.
 
-Check out the comprehensive list of [collaborators](https://github.com/emilbratt/lonely-chess/graphs/contributors).
+Check out the current state of the [application](https://emilbratt.github.io/lonely-chess/)
+
+Check out the comprehensive list of [collaborators](https://github.com/emilbratt/lonely-chess/graphs/contributors)
 
 
 # I want to contribute
