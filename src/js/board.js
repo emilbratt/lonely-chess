@@ -58,24 +58,27 @@ function createTilesHTML() {
             tile.classList.add("tile");
             if (row % 2) tile.classList.add("odd");
             tile.addEventListener("mousedown", (event) => {
-                if (currentPosition[row][col]) {
-                    if (event.altKey) {
-                        // Temporary event listener for testing purposes
-                        // If you hold Alt when clicking a piece, it deletes the piece!
-                        // Used for testing collision updates for now
-                        currentPosition[row][col] = null;
-                        drawCurrentPosition();
-                    } else {
-                        console.log(
-                            currentPosition[row][col].getPossibleMoves(
-                                currentPosition
-                            )
-                        );
-                    }
-                }
+                handleClick(event, row, col);
             });
             board.append(tile);
         }
+    }
+}
+
+function handleClick(event, row, col) {
+    clearPossibleMovesClasses();
+    if (!currentPosition[row][col]) return;
+    if (event.altKey) {
+        // Temporary event listener for testing purposes
+        // If you hold Alt when clicking a piece, it deletes the piece!
+        // Used for testing collision updates for now
+        currentPosition[row][col] = null;
+        drawCurrentPosition();
+    } else {
+        const possibleMoves =
+            currentPosition[row][col].getPossibleMoves(currentPosition);
+        showPossibleMoves(possibleMoves);
+        getTileElement(row, col).classList.add("selected-piece");
     }
 }
 
@@ -111,5 +114,28 @@ function drawCurrentPosition() {
                 currentTileElement.textContent = "";
             }
         }
+    }
+}
+
+function showPossibleMoves(possibleMoves) {
+    console.log(possibleMoves);
+    if (!possibleMoves.length) return;
+    for (const { row, col, attack } of possibleMoves) {
+        const tile = getTileElement(row, col);
+        const classString = attack ? "possible-attack" : "possible-move";
+        tile.classList.add(classString);
+    }
+}
+
+function clearPossibleMovesClasses() {
+    const tilesToClear = document.querySelectorAll(
+        ".possible-move, .possible-attack, .selected-piece"
+    );
+    for (const tile of tilesToClear) {
+        tile.classList.remove(
+            "possible-move",
+            "possible-attack",
+            "selected-piece"
+        );
     }
 }
