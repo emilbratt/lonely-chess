@@ -1,4 +1,3 @@
-///// "Nå er jeg litt kjapp her! Det skjer jo stadig vekk!" -Terje /////
 function initApp() {
     currentPosition = createStartingPosition();
     createTilesHTML();
