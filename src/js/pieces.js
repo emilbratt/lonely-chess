@@ -41,6 +41,16 @@ class Piece {
         return false;
     }
     getMovesFromMinMaxMoves(minMoves, maxMoves, directions, _currentPosition) {
+        /*
+        * Try to move a piece until it:
+        *       - reaches its maxMoves limit
+        *       - collides with the edge (out of bounds)
+        *       - collides with a friendly piece (attack is set to false)
+        *       - captures an enemy piece (attack is set to true)
+        *
+        * Each direction tested is passed in the 3rd parameter
+        * Knowing what each tile currently contains is passd in the 4th parameter
+        */
         const possibleMoves = [];
         for (let i = minMoves; i <= maxMoves; i++) {
             for (let j = 0; j < directions.length; j++) {
