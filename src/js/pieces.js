@@ -28,13 +28,13 @@ class Piece {
     row;
     col;
     color;
-    constructor(col, row, color) {
+    constructor(row, col, color) {
         this.row = row;
         this.col = col;
         this.color = color;
     }
     getPosition() {
-        return { col: this.col, row: this.row };
+        return { row: this.row, col: this.col };
     }
     isOutOfBounds(col, row) {
         if (col < 0 || col > 7 || row < 0 || row > 7) return true;

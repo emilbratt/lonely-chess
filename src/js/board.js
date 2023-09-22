@@ -3,21 +3,21 @@ let currentPosition = [];
 
 function createBackline(row, color) {
     return [
-        new Rook(0, row, color),
-        new Knight(1, row, color),
-        new Bishop(2, row, color),
-        new Queen(3, row, color),
-        new King(4, row, color),
-        new Bishop(5, row, color),
-        new Knight(6, row, color),
-        new Rook(7, row, color),
+        new Rook(row, 0, color),
+        new Knight(row, 1, color),
+        new Bishop(row, 2, color),
+        new Queen(row, 3, color),
+        new King(row, 4, color),
+        new Bishop(row, 5, color),
+        new Knight(row, 6, color),
+        new Rook(row, 7, color),
     ];
 }
 
 function createPawns(row, color) {
     const pawns = [];
     for (let col = 0; col < 8; col++) {
-        pawns.push(new Pawn(col, row, color));
+        pawns.push(new Pawn(row, col, color));
     }
     return pawns;
 }
