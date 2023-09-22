@@ -68,7 +68,7 @@ function handleClick(event, row, col) {
     } else {
         const possibleMoves =
             currentPosition[row][col].getPossibleMoves(currentPosition);
-        showPossibleMoves(possibleMoves);
+        showPossibleMovesCSS(possibleMoves);
         getTileElement(row, col).classList.add("selected-piece");
     }
 }
@@ -108,7 +108,7 @@ function drawCurrentPosition() {
     }
 }
 
-function showPossibleMoves(possibleMoves) {
+function showPossibleMovesCSS(possibleMoves) {
     console.log(possibleMoves);
     if (!possibleMoves.length) return;
     for (const { row, col, attack } of possibleMoves) {
