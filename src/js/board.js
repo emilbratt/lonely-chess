@@ -24,24 +24,16 @@ function createPawns(y, color) {
 }
 
 function createStartingPosition() {
-    const blackBackline = createBackline(0, "black");
-    const blackPawns = createPawns(1, "black");
-    const whiteBackline = createBackline(7, "white");
-    const whitePawns = createPawns(6, "white");
-    const newBoard = [];
-    for (let row = 0; row < 8; row++) {
-        if (row === 0) {
-            newBoard.push(blackBackline);
-        } else if (row === 1) {
-            newBoard.push(blackPawns);
-        } else if (row === 6) {
-            newBoard.push(whitePawns);
-        } else if (row === 7) {
-            newBoard.push(whiteBackline);
-        } else {
-            newBoard.push(new Array(8).fill(null));
-        }
-    }
+    const newBoard = [
+        createBackline(0, "black"),
+        createPawns(1, "black"),
+        new Array(8).fill(null),
+        new Array(8).fill(null),
+        new Array(8).fill(null),
+        new Array(8).fill(null),
+        createPawns(6, "white"),
+        createBackline(7, "white"),
+    ];
     console.log(newBoard);
     return newBoard;
 }
