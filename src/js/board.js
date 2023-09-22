@@ -1,6 +1,10 @@
 const board = document.getElementById("board");
 let currentPosition = [];
-let trackMoves = { moves: 0, history: [] };
+const trackMoves = {
+    isWhiteTurn: true,
+    moves: 0,
+    history: [],
+};
 const selected = {
     row: null,
     col: null,
@@ -57,6 +61,7 @@ function movePiece(piece, newRow, newCol) {
     currentPosition[oldRow][oldCol] = null;
     currentPosition[newRow][newCol] = piece;
     trackMoves.moves += 1;
+    trackMoves.isWhiteTurn = !trackMoves.isWhiteTurn;
     drawCurrentPosition();
 }
 
