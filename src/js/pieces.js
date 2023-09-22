@@ -36,21 +36,25 @@ class Piece {
     getPosition() {
         return { row: this.row, col: this.col };
     }
+    setPosition(row, col) {
+        this.row = row;
+        this.col = col;
+    }
     isOutOfBounds(col, row) {
         if (col < 0 || col > 7 || row < 0 || row > 7) return true;
         return false;
     }
     getMovesFromMinMaxMoves(minMoves, maxMoves, directions, _currentPosition) {
         /*
-        * Try to move a piece until it:
-        *       - reaches its maxMoves limit
-        *       - collides with the edge (out of bounds)
-        *       - collides with a friendly piece (attack is set to false)
-        *       - captures an enemy piece (attack is set to true)
-        *
-        * Each direction tested is passed in the 3rd parameter
-        * Knowing what each tile currently contains is passed in the 4th parameter
-        */
+         * Try to move a piece until it:
+         *       - reaches its maxMoves limit
+         *       - collides with the edge (out of bounds)
+         *       - collides with a friendly piece (attack is set to false)
+         *       - captures an enemy piece (attack is set to true)
+         *
+         * Each direction tested is passed in the 3rd parameter
+         * Knowing what each tile currently contains is passed in the 4th parameter
+         */
         const possibleMoves = [];
         for (let i = minMoves; i <= maxMoves; i++) {
             for (let j = 0; j < directions.length; j++) {
@@ -132,14 +136,14 @@ class Knight extends Piece {
     getPossibleMoves(_currentPosition) {
         const possibleMoves = [];
         const directions = [
-            KNIGHT_UP_LEFT,
-            KNIGHT_UP_RIGHT,
-            KNIGHT_DOWN_LEFT,
-            KNIGHT_DOWN_RIGHT,
-            KNIGHT_LEFT_UP,
-            KNIGHT_LEFT_DOWN,
-            KNIGHT_RIGHT_UP,
-            KNIGHT_RIGHT_DOWN,
+            { ...KNIGHT_UP_LEFT },
+            { ...KNIGHT_UP_RIGHT },
+            { ...KNIGHT_DOWN_LEFT },
+            { ...KNIGHT_DOWN_RIGHT },
+            { ...KNIGHT_LEFT_UP },
+            { ...KNIGHT_LEFT_DOWN },
+            { ...KNIGHT_RIGHT_UP },
+            { ...KNIGHT_RIGHT_DOWN },
         ];
 
         for (const { col, row } of directions) {
@@ -169,7 +173,6 @@ class Knight extends Piece {
 class Queen extends Piece {
     symbol = UNICODE_PIECES.queen;
     getPossibleMoves(_currentPosition) {
-        const possibleMoves = [];
         const directions = [
             { ...UP, collided: false },
             { ...DOWN, collided: false },
@@ -196,16 +199,15 @@ class Queen extends Piece {
 class King extends Piece {
     symbol = UNICODE_PIECES.king;
     getPossibleMoves(_currentPosition) {
-        const possibleMoves = [];
         const directions = [
-            UP,
-            DOWN,
-            LEFT,
-            RIGHT,
-            DIAGONAL_UP_LEFT,
-            DIAGONAL_UP_RIGHT,
-            DIAGONAL_DOWN_LEFT,
-            DIAGONAL_DOWN_RIGHT,
+            { ...UP },
+            { ...DOWN },
+            { ...LEFT },
+            { ...RIGHT },
+            { ...DIAGONAL_UP_LEFT },
+            { ...DIAGONAL_UP_RIGHT },
+            { ...DIAGONAL_DOWN_LEFT },
+            { ...DIAGONAL_DOWN_RIGHT },
         ];
         const MIN_MOVES = 1;
         const MAX_MOVES = 1;
@@ -216,7 +218,6 @@ class King extends Piece {
             directions,
             _currentPosition
         );
-        return possibleMoves;
     }
 }
 
@@ -228,8 +229,6 @@ class Pawn extends Piece {
          * It only accounts for first move, normal move, and diagonal attack.
          * Does NOT account for en passant, as we haven't even implemented moving pieces yet
          */
-        const MIN_MOVES = 1;
-        const MAX_MOVES = this.hasMoved ? 1 : 2;
         const moveDirections =
             this.color === "white"
                 ? [{ ...UP, collided: false }]
@@ -238,6 +237,10 @@ class Pawn extends Piece {
             this.color === "white"
                 ? [{ ...DIAGONAL_UP_LEFT }, { ...DIAGONAL_UP_RIGHT }]
                 : [{ ...DIAGONAL_DOWN_LEFT }, { ...DIAGONAL_DOWN_RIGHT }];
+
+        const MIN_MOVES = 1;
+        const MAX_MOVES = this.hasMoved ? 1 : 2;
+
         const possibleMoves = this.getPossibleMovesNoAttacks(
             MIN_MOVES,
             MAX_MOVES,
@@ -250,7 +253,12 @@ class Pawn extends Piece {
         );
         return [...possibleMoves, ...possibleAttacks];
     }
-    getPossibleMovesNoAttacks(minMoves, maxMoves, directions, _currentPosition) {
+    getPossibleMovesNoAttacks(
+        minMoves,
+        maxMoves,
+        directions,
+        _currentPosition
+    ) {
         const possibleMoves = [];
         for (let i = minMoves; i <= maxMoves; i++) {
             const { row, collided } = directions[0];
