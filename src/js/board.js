@@ -1,5 +1,11 @@
 const board = document.getElementById("board");
 let currentPosition = [];
+let trackMoves = { moves: 0, history: [] };
+const selected = {
+    row: null,
+    col: null,
+    possibleMoves: [],
+};
 
 function createBackline(row, color) {
     return [
@@ -41,6 +47,19 @@ function createIdString(row, col) {
     return `${row}-${col}`;
 }
 
+function movePiece(piece, newRow, newCol) {
+    const { row: oldRow, col: oldCol } = piece.getPosition();
+    trackMoves.history.push({
+        from: { row: oldRow, col: oldCol },
+        to: { row: newRow, col: newCol },
+    });
+    piece.setPosition(newRow, newCol);
+    currentPosition[oldRow][oldCol] = null;
+    currentPosition[newRow][newCol] = piece;
+    trackMoves.moves += 1;
+    drawCurrentPosition();
+}
+
 function createTilesHTML() {
     for (let row = 0; row < currentPosition.length; row++) {
         for (let col = 0; col < currentPosition[0].length; col++) {
@@ -48,29 +67,46 @@ function createTilesHTML() {
             tile.id = createIdString(row, col);
             tile.classList.add("tile");
             if (row % 2) tile.classList.add("odd");
-            tile.addEventListener("mousedown", (event) => {
-                handleClick(event, row, col);
+            tile.addEventListener("mousedown", () => {
+                handleClick(row, col);
             });
             board.append(tile);
         }
     }
 }
 
-function handleClick(event, row, col) {
+function handleClick(row, col) {
     clearPossibleMovesCSS();
-    if (!currentPosition[row][col]) return;
-    if (event.altKey) {
-        // Temporary event listener for testing purposes
-        // If you hold Alt when clicking a piece, it deletes the piece!
-        // Used for testing collision updates for now
-        currentPosition[row][col] = null;
-        drawCurrentPosition();
-    } else {
-        const possibleMoves =
-            currentPosition[row][col].getPossibleMoves(currentPosition);
-        showPossibleMovesCSS(possibleMoves);
-        getTileElement(row, col).classList.add("selected-piece");
+    if (isValidMove(row, col)) {
+        handleClickMove(row, col);
+        return;
     }
+    if (!currentPosition[row][col]) {
+        selected.possibleMoves = [];
+        return;
+    }
+    const possibleMoves =
+        currentPosition[row][col].getPossibleMoves(currentPosition);
+    showPossibleMovesCSS(possibleMoves);
+    getTileElement(row, col).classList.add("selected-piece");
+    if (possibleMoves.length) {
+        selected.row = row;
+        selected.col = col;
+    }
+}
+
+function handleClickMove(row, col) {
+    selected.possibleMoves = [];
+    const pieceToMove = currentPosition[selected.row][selected.col];
+    movePiece(pieceToMove, row, col);
+}
+
+function isValidMove(row, col) {
+    for (const move of selected.possibleMoves) {
+        const { row: possibleRow, col: possibleCol } = move;
+        if (possibleCol === col && possibleRow === row) return true;
+    }
+    return false;
 }
 
 function getTileElement(row, col) {
@@ -110,6 +146,7 @@ function drawCurrentPosition() {
 
 function showPossibleMovesCSS(possibleMoves) {
     console.log(possibleMoves);
+    selected.possibleMoves = possibleMoves;
     if (!possibleMoves.length) return;
     for (const { row, col, attack } of possibleMoves) {
         const tile = getTileElement(row, col);

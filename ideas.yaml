@@ -1,0 +1,4 @@
+1. click to select piece -> click to move piece
+- store currently selected piece + possible moves returned by the piece
+
+2. click and drag piece to move piece
