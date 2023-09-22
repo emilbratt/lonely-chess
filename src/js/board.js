@@ -1,24 +1,23 @@
 const board = document.getElementById("board");
 let currentPosition = [];
 
-function createBackline(y, color) {
+function createBackline(row, color) {
     return [
-        new Rook(0, y, color),
-        new Knight(1, y, color),
-        new Bishop(2, y, color),
-        new Queen(3, y, color),
-        new King(4, y, color),
-        new Bishop(5, y, color),
-        new Knight(6, y, color),
-        new Rook(7, y, color),
+        new Rook(0, row, color),
+        new Knight(1, row, color),
+        new Bishop(2, row, color),
+        new Queen(3, row, color),
+        new King(4, row, color),
+        new Bishop(5, row, color),
+        new Knight(6, row, color),
+        new Rook(7, row, color),
     ];
 }
 
-function createPawns(y, color) {
+function createPawns(row, color) {
     const pawns = [];
-    const BOARD_LENGTH = 8;
-    for (let i = 0; i < BOARD_LENGTH; i++) {
-        pawns.push(new Pawn(i, y, color));
+    for (let col = 0; col < 8; col++) {
+        pawns.push(new Pawn(col, row, color));
     }
     return pawns;
 }

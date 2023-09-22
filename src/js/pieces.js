@@ -25,6 +25,9 @@ const KNIGHT_RIGHT_UP = { col: 2, row: -1 };
 const KNIGHT_RIGHT_DOWN = { col: 2, row: 1 };
 
 class Piece {
+    /*
+     * FIXME: are these properties (row & col) used for position?
+     */
     row;
     col;
     color;
@@ -49,7 +52,7 @@ class Piece {
         *       - captures an enemy piece (attack is set to true)
         *
         * Each direction tested is passed in the 3rd parameter
-        * Knowing what each tile currently contains is passd in the 4th parameter
+        * Knowing what each tile currently contains is passed in the 4th parameter
         */
         const possibleMoves = [];
         for (let i = minMoves; i <= maxMoves; i++) {
