@@ -40,7 +40,7 @@ class Piece {
         if (col < 0 || col > 7 || row < 0 || row > 7) return true;
         return false;
     }
-    getMovesFromMinMaxMoves(minMoves, maxMoves, directions, currentBoard) {
+    getMovesFromMinMaxMoves(minMoves, maxMoves, directions, _currentPosition) {
         const possibleMoves = [];
         for (let i = minMoves; i <= maxMoves; i++) {
             for (let j = 0; j < directions.length; j++) {
@@ -50,7 +50,7 @@ class Piece {
                     this.row + row * i,
                 ];
                 if (this.isOutOfBounds(newCol, newRow) || collided) continue;
-                const tileBeingChecked = currentBoard[newRow][newCol];
+                const tileBeingChecked = _currentPosition[newRow][newCol];
                 if (tileBeingChecked !== null) {
                     if (tileBeingChecked.color !== this.color) {
                         possibleMoves.push({
@@ -75,7 +75,7 @@ class Piece {
 
 class Rook extends Piece {
     symbol = UNICODE_PIECES.rook;
-    getPossibleMoves(currentBoard) {
+    getPossibleMoves(_currentPosition) {
         const directions = [
             { ...UP, collided: false },
             { ...DOWN, collided: false },
@@ -90,14 +90,14 @@ class Rook extends Piece {
             MIN_MOVES,
             MAX_MOVES,
             directions,
-            currentBoard
+            _currentPosition
         );
     }
 }
 
 class Bishop extends Piece {
     symbol = UNICODE_PIECES.bishop;
-    getPossibleMoves(currentBoard) {
+    getPossibleMoves(_currentPosition) {
         const directions = [
             { ...DIAGONAL_UP_LEFT, collided: false },
             { ...DIAGONAL_UP_RIGHT, collided: false },
@@ -112,14 +112,14 @@ class Bishop extends Piece {
             MIN_MOVES,
             MAX_MOVES,
             directions,
-            currentBoard
+            _currentPosition
         );
     }
 }
 
 class Knight extends Piece {
     symbol = UNICODE_PIECES.knight;
-    getPossibleMoves(currentBoard) {
+    getPossibleMoves(_currentPosition) {
         const possibleMoves = [];
         const directions = [
             KNIGHT_UP_LEFT,
@@ -135,7 +135,7 @@ class Knight extends Piece {
         for (const { col, row } of directions) {
             const [newCol, newRow] = [this.col + col, this.row + row];
             if (this.isOutOfBounds(newCol, newRow)) continue;
-            const tileBeingChecked = currentBoard[newRow][newCol];
+            const tileBeingChecked = _currentPosition[newRow][newCol];
             if (tileBeingChecked !== null) {
                 if (tileBeingChecked.color !== this.color) {
                     possibleMoves.push({
@@ -158,7 +158,7 @@ class Knight extends Piece {
 
 class Queen extends Piece {
     symbol = UNICODE_PIECES.queen;
-    getPossibleMoves(currentBoard) {
+    getPossibleMoves(_currentPosition) {
         const possibleMoves = [];
         const directions = [
             { ...UP, collided: false },
@@ -178,14 +178,14 @@ class Queen extends Piece {
             MIN_MOVES,
             MAX_MOVES,
             directions,
-            currentBoard
+            _currentPosition
         );
     }
 }
 
 class King extends Piece {
     symbol = UNICODE_PIECES.king;
-    getPossibleMoves(currentBoard) {
+    getPossibleMoves(_currentPosition) {
         const possibleMoves = [];
         const directions = [
             UP,
@@ -204,7 +204,7 @@ class King extends Piece {
             MIN_MOVES,
             MAX_MOVES,
             directions,
-            currentBoard
+            _currentPosition
         );
         return possibleMoves;
     }
@@ -213,7 +213,7 @@ class King extends Piece {
 class Pawn extends Piece {
     symbol = UNICODE_PIECES.pawn;
     hasMoved = false;
-    getPossibleMoves(currentBoard) {
+    getPossibleMoves(_currentPosition) {
         /*
          * It only accounts for first move, normal move, and diagonal attack.
          * Does NOT account for en passant, as we haven't even implemented moving pieces yet
@@ -232,21 +232,21 @@ class Pawn extends Piece {
             MIN_MOVES,
             MAX_MOVES,
             moveDirections,
-            currentBoard
+            _currentPosition
         );
         const possibleAttacks = this.getPossibleAttacks(
             attackDirections,
-            currentBoard
+            _currentPosition
         );
         return [...possibleMoves, ...possibleAttacks];
     }
-    getPossibleMovesNoAttacks(minMoves, maxMoves, directions, currentBoard) {
+    getPossibleMovesNoAttacks(minMoves, maxMoves, directions, _currentPosition) {
         const possibleMoves = [];
         for (let i = minMoves; i <= maxMoves; i++) {
             const { row, collided } = directions[0];
             const newRow = this.row + row * i;
             if (this.isOutOfBounds(this.col, newRow) || collided) continue;
-            const tileBeingChecked = currentBoard[newRow][this.col];
+            const tileBeingChecked = _currentPosition[newRow][this.col];
             if (tileBeingChecked === null) {
                 possibleMoves.push({
                     col: this.col,
@@ -259,12 +259,12 @@ class Pawn extends Piece {
         }
         return possibleMoves;
     }
-    getPossibleAttacks(attackDirections, currentBoard) {
+    getPossibleAttacks(attackDirections, _currentPosition) {
         const possibleAttacks = [];
         for (const { col, row } of attackDirections) {
             const [newCol, newRow] = [this.col + col, this.row + row];
             if (this.isOutOfBounds(newCol, newRow)) continue;
-            const tileBeingChecked = currentBoard[newRow][newCol];
+            const tileBeingChecked = _currentPosition[newRow][newCol];
             if (
                 tileBeingChecked !== null &&
                 tileBeingChecked.color !== this.color
