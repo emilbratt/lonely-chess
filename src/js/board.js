@@ -66,7 +66,7 @@ function createTilesHTML() {
 }
 
 function handleClick(event, row, col) {
-    clearPossibleMovesClasses();
+    clearPossibleMovesCSS();
     if (!currentPosition[row][col]) return;
     if (event.altKey) {
         // Temporary event listener for testing purposes
@@ -127,7 +127,7 @@ function showPossibleMoves(possibleMoves) {
     }
 }
 
-function clearPossibleMovesClasses() {
+function clearPossibleMovesCSS() {
     const tilesToClear = document.querySelectorAll(
         ".possible-move, .possible-attack, .selected-piece"
     );
