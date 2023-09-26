@@ -21,7 +21,6 @@ function makeAlgebraicNotation(index){
     const startColNotation = findNotationSymbol(startCol, 'col')
     const endRowNotation = findNotationSymbol(endRow, 'row')
     const endColNotation = findNotationSymbol(endCol, 'col')
-    currentMoveString = index+1
     let currentMoveString = ''
     let currentMoveString1 = 'Move NR.'
     let currentMoveString2 =', moved from '
