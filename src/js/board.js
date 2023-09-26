@@ -4,7 +4,7 @@ const trackMoves = {
     isWhiteTurn: true,
     moves: 0,
     history: [],
-    historyAlgebraicNotation: [],
+    historyInAlgebraicNotation: [],
 };
 const selected = {
     row: null,

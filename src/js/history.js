@@ -1,13 +1,11 @@
 let rowArray = [8,7,6,5,4,3,2,1];
 let colArray = ['A','B','C','D','E','F','G','H']
-let historyInAlgebraicNotation = []
+
 
 
 function getHistory(){
 for (let index = 0; index < trackMoves.history.length; index++) {
     const currentMove = trackMoves.history[index];
-    console.log(index)
-    console.log(currentMove)
 
     makeAlgebraicNotation(index);
 }
@@ -22,15 +20,18 @@ function makeAlgebraicNotation(index){
     const endRowNotation = findNotationSymbol(endRow, 'row')
     const endColNotation = findNotationSymbol(endCol, 'col')
     let currentMoveString = ''
-    let currentMoveString1 = 'Move NR.'
-    let currentMoveString2 =', moved from '
+    let currentMoveString1 = '' // does nothing
+    let currentMoveString2 ='Piece moved from '
     let currentMoveString3 = startColNotation
     let currentMoveString4 = startRowNotation
     let currentMoveString5 = ' to '
     let currentMoveString6 = endColNotation
     let currentMoveString7 = endRowNotation
-    console.log(currentMoveString.concat(currentMoveString1,currentMoveString2,currentMoveString3,currentMoveString4,currentMoveString5,currentMoveString6,currentMoveString7))
-// need to push the line above to trackMoves.historyAlgebraicNotation
+    currentMoveString = currentMoveString1.concat(currentMoveString2,currentMoveString3,currentMoveString4,currentMoveString5,currentMoveString6,currentMoveString7)
+    console.log(currentMoveString)
+    trackMoves.historyInAlgebraicNotation.push(currentMoveString)
+
+    
 }
 
 function findNotationSymbol(value, rowOrCol){
