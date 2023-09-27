@@ -10,7 +10,7 @@ function getHistory() {
     }
 }
 
-function makeAlgebraicNotation(index){
+function makeAlgebraicNotation(index) {
     let startRow = trackMoves.history[index].from.row;
     let startCol = trackMoves.history[index].from.col;
     let endRow = trackMoves.history[index].to.row;
