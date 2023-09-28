@@ -55,7 +55,7 @@ function createIdString(row, col) {
 function movePiece(piece, newRow, newCol) {
     const { row: oldRow, col: oldCol } = piece.getPosition();
     trackMoves.history.push({
-        pieceSymbol: piece.symbol, 
+        symbol: piece.symbol,
         from: { row: oldRow, col: oldCol },
         to: { row: newRow, col: newCol },
     });
