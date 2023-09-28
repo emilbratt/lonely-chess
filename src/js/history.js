@@ -5,7 +5,6 @@ const algebraicNotationColArray = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 function getHistory() {
     trackMoves.historyInAlgebraicNotation = [];
     for (let index = 0; index < trackMoves.history.length; index++) {
-
         makeAlgebraicNotation(index);
     }
 }
@@ -53,13 +52,11 @@ function findNotationSymbol(value, rowOrCol) {
 }
 
 function getHistoryDisplayed() {
-    getHistory()
-    document.getElementById('history').innerHTML= ``;
+    getHistory();
+    document.getElementById('history').innerHTML= '';
     for (let index = 0; index < trackMoves.historyInAlgebraicNotation.length; index++) {
-        document.getElementById('history').innerHTML+= /*HTML*/`
-        <div>${trackMoves.historyInAlgebraicNotation[index]}<div>
+        document.getElementById('history').innerHTML += /*HTML*/`
+            <div>${trackMoves.historyInAlgebraicNotation[index]}<div>
         `;    
-                    
-        
     }
 }
