@@ -1,11 +1,10 @@
-const rowArray = [8, 7, 6, 5, 4, 3, 2, 1];
-const colArray = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+const algebraicNotationRowArray = [8, 7, 6, 5, 4, 3, 2, 1];
+const algebraicNotationColArray = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
 
 function getHistory() {
     trackMoves.historyInAlgebraicNotation = [];
     for (let index = 0; index < trackMoves.history.length; index++) {
-
         makeAlgebraicNotation(index);
     }
 }
@@ -42,13 +41,22 @@ function makeAlgebraicNotation(index) {
         currentMoveString6,
         currentMoveString7
     );
-    console.log(currentMoveString);
     trackMoves.historyInAlgebraicNotation.push(currentMoveString);
 }
 
 function findNotationSymbol(value, rowOrCol) {
     if(rowOrCol == 'row') {
-        return rowArray[value];
+        return algebraicNotationRowArray[value];
     }
-    return colArray[value];
+    return algebraicNotationColArray[value];
+}
+
+function getHistoryDisplayed() {
+    getHistory();
+    document.getElementById('history').innerHTML= '';
+    for (let index = 0; index < trackMoves.historyInAlgebraicNotation.length; index++) {
+        document.getElementById('history').innerHTML += /*HTML*/`
+            <div>${trackMoves.historyInAlgebraicNotation[index]}<div>
+        `;    
+    }
 }
