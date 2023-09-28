@@ -263,15 +263,16 @@ class Pawn extends Piece {
         for (let i = minMoves; i <= maxMoves; i++) {
             const { row, collided } = directions[0];
             const newRow = this.row + row * i;
+            
             if (this.isOutOfBounds(this.col, newRow) || collided) continue;
             const tileBeingChecked = _currentPosition[newRow][this.col];
-            if (tileBeingChecked === null) {
-                possibleMoves.push({
-                    col: this.col,
-                    row: newRow,
-                    attack: false,
-                });
-            } else {
+
+            if (tileBeingChecked === null) 
+            {
+                possibleMoves.push({col: this.col, row: newRow, attack: false,});
+            } 
+            else 
+            {
                 directions[0].collided = true;
             }
         }
@@ -281,17 +282,13 @@ class Pawn extends Piece {
         const possibleAttacks = [];
         for (const { col, row } of attackDirections) {
             const [newCol, newRow] = [this.col + col, this.row + row];
+
             if (this.isOutOfBounds(newCol, newRow)) continue;
             const tileBeingChecked = _currentPosition[newRow][newCol];
-            if (
-                tileBeingChecked !== null &&
-                tileBeingChecked.color !== this.color
-            ) {
-                possibleAttacks.push({
-                    col: newCol,
-                    row: newRow,
-                    attack: true,
-                });
+
+            if (tileBeingChecked !== null &&tileBeingChecked.color !== this.color)
+            {
+                possibleAttacks.push({col: newCol, row: newRow, attack: true,});
             }
         }
         return possibleAttacks;
