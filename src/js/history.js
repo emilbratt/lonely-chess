@@ -9,10 +9,12 @@ function getHistory() {
     }
 }
 
+
+
 function makeAlgebraicNotation(index) {
     const currentMove = trackMoves.history[index];
     const moveNumber = index + 1;
-    const pieceMoved = currentMove.pieceSymbol;
+    const pieceMoved = currentMove.symbol;
     let startRow = currentMove.from.row;
     let startCol = currentMove.from.col;
     let endRow = currentMove.to.row;
@@ -24,22 +26,22 @@ function makeAlgebraicNotation(index) {
     let currentMoveString = ''
     let currentMoveString0 = 'Move Nr.';
     let currentMoveString1 = moveNumber;
-    let currentMoveString1point1 = pieceMoved;
-    let currentMoveString2 = ' moved from ';
-    let currentMoveString3 = startColNotation;
-    let currentMoveString4 = startRowNotation;
-    let currentMoveString5 = ' to ';
-    let currentMoveString6 = endColNotation;
-    let currentMoveString7 = endRowNotation;
+    let currentMoveString2 = pieceMoved;
+    let currentMoveString3 = ' moved from ';
+    let currentMoveString4 = startColNotation;
+    let currentMoveString5 = startRowNotation;
+    let currentMoveString6 = ' to ';
+    let currentMoveString7 = endColNotation;
+    let currentMoveString8 = endRowNotation;
     currentMoveString = currentMoveString0.concat(
         currentMoveString1,
-        currentMoveString1point1,
         currentMoveString2,
         currentMoveString3,
         currentMoveString4,
         currentMoveString5,
         currentMoveString6,
-        currentMoveString7
+        currentMoveString7,
+        currentMoveString8
     );
     trackMoves.historyInAlgebraicNotation.push(currentMoveString);
 }
