@@ -64,6 +64,7 @@ function movePiece(piece, newRow, newCol) {
     currentPosition[newRow][newCol] = piece;
     trackMoves.moves += 1;
     trackMoves.isWhiteTurn = !trackMoves.isWhiteTurn;
+    drawHistory();
     drawCurrentPosition();
 }
 

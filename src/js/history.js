@@ -1,5 +1,13 @@
-const algebraicNotationRowArray = [8, 7, 6, 5, 4, 3, 2, 1];
-const algebraicNotationColArray = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+const notationMatrix = [
+    ["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8"],
+    ["a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7"],
+    ["a6", "b6", "c6", "d6", "e6", "f6", "g6", "h6"],
+    ["a5", "b5", "c5", "d5", "e5", "f5", "g5", "h5"],
+    ["a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4"],
+    ["a3", "b3", "c3", "d3", "e3", "f3", "g3", "h3"],
+    ["a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"],
+    ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"],
+];
 
 
 function getHistory() {
@@ -9,56 +17,27 @@ function getHistory() {
     }
 }
 
-
-
 function makeAlgebraicNotation(index) {
     const currentMove = trackMoves.history[index];
-    const moveNumber = index + 1;
-    const pieceMoved = currentMove.symbol;
-    let startRow = currentMove.from.row;
-    let startCol = currentMove.from.col;
-    let endRow = currentMove.to.row;
-    let endCol = currentMove.to.col;
-    const startRowNotation = findNotationSymbol(startRow, 'row');
-    const startColNotation = findNotationSymbol(startCol, 'col');
-    const endRowNotation = findNotationSymbol(endRow, 'row');
-    const endColNotation = findNotationSymbol(endCol, 'col');
-    let currentMoveString = ''
-    let currentMoveString0 = 'Move Nr.';
-    let currentMoveString1 = moveNumber;
-    let currentMoveString2 = pieceMoved;
-    let currentMoveString3 = ' moved from ';
-    let currentMoveString4 = startColNotation;
-    let currentMoveString5 = startRowNotation;
-    let currentMoveString6 = ' to ';
-    let currentMoveString7 = endColNotation;
-    let currentMoveString8 = endRowNotation;
-    currentMoveString = currentMoveString0.concat(
-        currentMoveString1,
-        currentMoveString2,
-        currentMoveString3,
-        currentMoveString4,
-        currentMoveString5,
-        currentMoveString6,
-        currentMoveString7,
-        currentMoveString8
-    );
-    trackMoves.historyInAlgebraicNotation.push(currentMoveString);
+    const {row: startRow, col: startCol} = currentMove.from;
+    const {row: endRow, col: endCol} = currentMove.to;
+    const startNotation = notationMatrix[startRow][startCol];
+    const endNotation = notationMatrix[endRow][endCol];
+    const moveString = `
+        ${index + 1}. ${currentMove.symbol}
+        moved from ${startNotation}
+        to ${endNotation}
+    `;
+    trackMoves.historyInAlgebraicNotation.push(moveString);
 }
 
-function findNotationSymbol(value, rowOrCol) {
-    if(rowOrCol == 'row') {
-        return algebraicNotationRowArray[value];
-    }
-    return algebraicNotationColArray[value];
-}
-
-function getHistoryDisplayed() {
+function drawHistory() {
     getHistory();
-    document.getElementById('history').innerHTML= '';
+    const historyDiv = document.getElementById('history');
+    historyDiv.innerHTML= '';
     for (let index = 0; index < trackMoves.historyInAlgebraicNotation.length; index++) {
-        document.getElementById('history').innerHTML += /*HTML*/`
-            <div>${trackMoves.historyInAlgebraicNotation[index]}<div>
-        `;    
+        const moveDiv = document.createElement("div");
+        moveDiv.textContent = trackMoves.historyInAlgebraicNotation[index];
+        historyDiv.append(moveDiv);
     }
 }
