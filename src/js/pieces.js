@@ -224,6 +224,7 @@ class King extends Piece {
 class Pawn extends Piece {
     symbol = UNICODE_PIECES.pawn;
     hasMoved = false;
+    isEnPassantable = false;
     getPossibleMoves(_currentPosition) {
         /*
          * It only accounts for first move, normal move, and diagonal attack.
@@ -237,6 +238,7 @@ class Pawn extends Piece {
             this.color === "white"
                 ? [{ ...DIAGONAL_UP_LEFT }, { ...DIAGONAL_UP_RIGHT }]
                 : [{ ...DIAGONAL_DOWN_LEFT }, { ...DIAGONAL_DOWN_RIGHT }];
+        const enPassantDirections = [{ ...LEFT }, { ...RIGHT }];
 
         const MIN_MOVES = 1;
         const MAX_MOVES = this.hasMoved ? 1 : 2;
@@ -251,6 +253,14 @@ class Pawn extends Piece {
             attackDirections,
             _currentPosition
         );
+        const possibleEnPassant = this.getPossibleEnPassant(
+            enPassantDirections,
+            _currentPosition
+        );
+        if (possibleEnPassant?.isEnPassant) {
+            console.log("En passant possible!");
+            return [...possibleMoves, ...possibleAttacks, possibleEnPassant];
+        }
         return [...possibleMoves, ...possibleAttacks];
     }
     getPossibleMovesNoAttacks(
@@ -295,5 +305,17 @@ class Pawn extends Piece {
             }
         }
         return possibleAttacks;
+    }
+    getPossibleEnPassant(directions, _currentPosition) {
+        for (const { col } of directions) {
+            const newCol = this.col + col;
+            if (this.isOutOfBounds(this.row, newCol)) continue;
+            const tileBeingChecked = _currentPosition[this.row][newCol];
+            if (tileBeingChecked?.isEnPassantable) {
+                console.log("En passant detected, returning")
+                if (this.color === 'white') return {col: newCol, row: this.row - 1, attack: true, isEnPassant: true};
+                return {col: newCol, row: this.row + 1, attack: true, isEnPassant: true};
+            }
+        }
     }
 }

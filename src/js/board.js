@@ -45,6 +45,7 @@ function createStartingPosition() {
         createBackline(7, "white"),
     ];
     console.log(newBoard);
+    newBoard[4][4] = new Pawn(4, 4, 'black');
     return newBoard;
 }
 
@@ -52,15 +53,36 @@ function createIdString(row, col) {
     return `${row}-${col}`;
 }
 
-function movePiece(piece, newRow, newCol) {
+function movePiece(piece, newRow, newCol, isEnPassant) {
+    console.log("En passant:", isEnPassant);
+    for (const row of currentPosition) {
+        for (const tile of row) {
+            if (tile instanceof Pawn) {
+                tile.isEnPassantable = false;
+            }
+        }
+    }
     const { row: oldRow, col: oldCol } = piece.getPosition();
     trackMoves.history.push({
         symbol: piece.symbol,
         from: { row: oldRow, col: oldCol },
         to: { row: newRow, col: newCol },
     });
+    if (piece instanceof Pawn) {
+        piece.hasMoved = true;
+        if (Math.abs(piece.row - newRow) === 2) {
+            piece.isEnPassantable = true;
+        }
+    }
+
     piece.setPosition(newRow, newCol);
     currentPosition[oldRow][oldCol] = null;
+
+    if (isEnPassant) {
+        if (piece.color === 'white') currentPosition[newRow + 1][newCol] = null;
+        else currentPosition[newRow - 1][newCol] = null;
+    }
+
     currentPosition[newRow][newCol] = piece;
     trackMoves.moves += 1;
     trackMoves.isWhiteTurn = !trackMoves.isWhiteTurn;
@@ -85,8 +107,9 @@ function createTilesHTML() {
 
 function handleClick(row, col) {
     clearPossibleMovesCSS();
-    if (isValidMove(row, col)) {
-        handleClickMove(row, col);
+    const {validMove, isEnPassant} = isValidMove(row, col);
+    if (validMove) {
+        handleClickMove(row, col, isEnPassant);
         return;
     }
     if (!currentPosition[row][col]) {
@@ -95,6 +118,7 @@ function handleClick(row, col) {
     }
     const possibleMoves =
         currentPosition[row][col].getPossibleMoves(currentPosition);
+    console.log('possibleMoves:', possibleMoves);
     showPossibleMovesCSS(possibleMoves);
     getTileElement(row, col).classList.add("selected-piece");
     if (possibleMoves.length) {
@@ -103,18 +127,18 @@ function handleClick(row, col) {
     }
 }
 
-function handleClickMove(row, col) {
+function handleClickMove(row, col, isEnPassant) {
     selected.possibleMoves = [];
     const pieceToMove = currentPosition[selected.row][selected.col];
-    movePiece(pieceToMove, row, col);
+    movePiece(pieceToMove, row, col, isEnPassant);
 }
 
 function isValidMove(row, col) {
     for (const move of selected.possibleMoves) {
-        const { row: possibleRow, col: possibleCol } = move;
-        if (possibleCol === col && possibleRow === row) return true;
+        const { row: possibleRow, col: possibleCol, isEnPassant} = move;
+        if (possibleCol === col && possibleRow === row) return {validMove: true, isEnPassant: isEnPassant ? true : false};
     }
-    return false;
+    return {validMove: false, isEnPassant: false};
 }
 
 function getTileElement(row, col) {
@@ -153,7 +177,6 @@ function drawCurrentPosition() {
 }
 
 function showPossibleMovesCSS(possibleMoves) {
-    console.log(possibleMoves);
     selected.possibleMoves = possibleMoves;
     if (!possibleMoves.length) return;
     for (const { row, col, attack } of possibleMoves) {
