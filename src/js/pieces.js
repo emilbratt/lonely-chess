@@ -49,8 +49,8 @@ class Piece {
          * Try to move a piece until it:
          *       - reaches its maxMoves limit
          *       - collides with the edge (out of bounds)
-         *       - collides with a friendly piece (attack is set to false)
-         *       - captures an enemy piece (attack is set to true)
+         *       - collides with a friendly piece (isAttack is set to false)
+         *       - captures an enemy piece (isAttack is set to true)
          *
          * Each direction tested is passed in the 3rd parameter
          * Knowing what each tile currently contains is passed in the 4th parameter
@@ -70,7 +70,7 @@ class Piece {
                         possibleMoves.push({
                             col: newCol,
                             row: newRow,
-                            attack: true,
+                            isAttack: true,
                         });
                     }
                     directions[j].collided = true;
@@ -78,7 +78,7 @@ class Piece {
                     possibleMoves.push({
                         col: newCol,
                         row: newRow,
-                        attack: false,
+                        isAttack: false,
                     });
                 }
             }
@@ -155,14 +155,14 @@ class Knight extends Piece {
                     possibleMoves.push({
                         col: newCol,
                         row: newRow,
-                        attack: true,
+                        isAttack: true,
                     });
                 }
             } else {
                 possibleMoves.push({
                     col: newCol,
                     row: newRow,
-                    attack: false,
+                    isAttack: false,
                 });
             }
         }
@@ -257,7 +257,7 @@ class Pawn extends Piece {
             enPassantDirections,
             _currentPosition
         );
-        if (possibleEnPassant?.isEnPassant) {
+        if (possibleEnPassant.isEnPassant) {
             console.log("En passant possible!");
             return [...possibleMoves, ...possibleAttacks, possibleEnPassant];
         }
@@ -279,7 +279,7 @@ class Pawn extends Piece {
                 possibleMoves.push({
                     col: this.col,
                     row: newRow,
-                    attack: false,
+                    isAttack: false,
                 });
             } else {
                 directions[0].collided = true;
@@ -300,22 +300,33 @@ class Pawn extends Piece {
                 possibleAttacks.push({
                     col: newCol,
                     row: newRow,
-                    attack: true,
+                    isAttack: true,
                 });
             }
         }
         return possibleAttacks;
     }
     getPossibleEnPassant(directions, _currentPosition) {
+        /*
+         * 1: check for adjacent enemy pawns
+         * 2: check if adjacent enemy pawn's property "isEnPassantable" === true
+         * 3: move the target tile (where this pawn will end up) to the one above or below the adjacent pawn
+         */
         for (const { col } of directions) {
             const newCol = this.col + col;
             if (this.isOutOfBounds(this.row, newCol)) continue;
             const tileBeingChecked = _currentPosition[this.row][newCol];
-            if (tileBeingChecked?.isEnPassantable) {
-                console.log("En passant detected, returning")
-                if (this.color === 'white') return {col: newCol, row: this.row - 1, attack: true, isEnPassant: true};
-                return {col: newCol, row: this.row + 1, attack: true, isEnPassant: true};
+            if (!tileBeingChecked) continue;
+            if (tileBeingChecked.symbol !== UNICODE_PIECES.pawn) continue;
+            if (tileBeingChecked.isEnPassantable) {
+                return { 
+                    col: newCol,
+                    row: this.row + (tileBeingChecked.color === 'white' ? + 1 : - 1),
+                    isAttack: true,
+                    isEnPassant: true
+                };
             }
         }
+        return { isEnPassant: false };
     }
 }

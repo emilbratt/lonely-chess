@@ -8,36 +8,27 @@ const notationMatrix = [
     ["a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"],
     ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"],
 ];
+let historyAlgebraicNotation = [];
 
 
-function getHistory() {
-    trackMoves.historyInAlgebraicNotation = [];
-    for (let index = 0; index < trackMoves.history.length; index++) {
-        makeAlgebraicNotation(index);
-    }
-}
-
-function makeAlgebraicNotation(index) {
+function addHistoryAlgebraicNotation() {
+    let index = trackMoves.moveCount; // we can use this to index the current move
     const currentMove = trackMoves.history[index];
     const {row: startRow, col: startCol} = currentMove.from;
     const {row: endRow, col: endCol} = currentMove.to;
     const startNotation = notationMatrix[startRow][startCol];
     const endNotation = notationMatrix[endRow][endCol];
-    const moveString = `
-        ${index + 1}. ${currentMove.symbol}
-        moved from ${startNotation}
-        to ${endNotation}
-    `;
-    trackMoves.historyInAlgebraicNotation.push(moveString);
+    const moveString = `${index + 1}. ${currentMove.symbol} ${startNotation} to ${endNotation}`;
+    historyAlgebraicNotation.push(moveString);
 }
 
 function drawHistory() {
-    getHistory();
+    addHistoryAlgebraicNotation();
     const historyDiv = document.getElementById('history');
     historyDiv.innerHTML= '';
-    for (let index = 0; index < trackMoves.historyInAlgebraicNotation.length; index++) {
+    for (let index = 0; index < historyAlgebraicNotation.length; index++) {
         const moveDiv = document.createElement("div");
-        moveDiv.textContent = trackMoves.historyInAlgebraicNotation[index];
+        moveDiv.textContent = historyAlgebraicNotation[index];
         historyDiv.append(moveDiv);
     }
 }

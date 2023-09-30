@@ -2,11 +2,10 @@ const board = document.getElementById("board");
 let currentPosition = [];
 const trackMoves = {
     isWhiteTurn: true,
-    moves: 0,
+    moveCount: 0,
     history: [],
-    historyInAlgebraicNotation: [],
 };
-const selected = {
+const selectedTile = {
     row: null,
     col: null,
     possibleMoves: [],
@@ -45,7 +44,6 @@ function createStartingPosition() {
         createBackline(7, "white"),
     ];
     console.log(newBoard);
-    newBoard[4][4] = new Pawn(4, 4, 'black');
     return newBoard;
 }
 
@@ -54,7 +52,6 @@ function createIdString(row, col) {
 }
 
 function movePiece(piece, newRow, newCol, isEnPassant) {
-    console.log("En passant:", isEnPassant);
     for (const row of currentPosition) {
         for (const tile of row) {
             if (tile instanceof Pawn) {
@@ -63,11 +60,7 @@ function movePiece(piece, newRow, newCol, isEnPassant) {
         }
     }
     const { row: oldRow, col: oldCol } = piece.getPosition();
-    trackMoves.history.push({
-        symbol: piece.symbol,
-        from: { row: oldRow, col: oldCol },
-        to: { row: newRow, col: newCol },
-    });
+
     if (piece instanceof Pawn) {
         piece.hasMoved = true;
         if (Math.abs(piece.row - newRow) === 2) {
@@ -77,17 +70,21 @@ function movePiece(piece, newRow, newCol, isEnPassant) {
 
     piece.setPosition(newRow, newCol);
     currentPosition[oldRow][oldCol] = null;
-
     if (isEnPassant) {
         if (piece.color === 'white') currentPosition[newRow + 1][newCol] = null;
         else currentPosition[newRow - 1][newCol] = null;
     }
-
     currentPosition[newRow][newCol] = piece;
-    trackMoves.moves += 1;
+
+    trackMoves.history.push({
+        symbol: piece.symbol,
+        from: { row: oldRow, col: oldCol },
+        to: { row: newRow, col: newCol },
+    });
     trackMoves.isWhiteTurn = !trackMoves.isWhiteTurn;
     drawHistory();
     drawCurrentPosition();
+    trackMoves.moveCount += 1;
 }
 
 function createTilesHTML() {
@@ -96,7 +93,7 @@ function createTilesHTML() {
             tile = document.createElement("div");
             tile.id = createIdString(row, col);
             tile.classList.add("tile");
-            if (row % 2) tile.classList.add("odd");
+            ((col+row) % 2) === 0 ? tile.classList.add("light-tile-color") : tile.classList.add("dark-tile-color");
             tile.addEventListener("mousedown", () => {
                 handleClick(row, col);
             });
@@ -112,33 +109,30 @@ function handleClick(row, col) {
         handleClickMove(row, col, isEnPassant);
         return;
     }
-    if (!currentPosition[row][col]) {
-        selected.possibleMoves = [];
-        return;
-    }
-    const possibleMoves =
-        currentPosition[row][col].getPossibleMoves(currentPosition);
+    let piece = currentPosition[row][col];
+    if (!piece) return;
+    const possibleMoves = piece.getPossibleMoves(currentPosition);
     console.log('possibleMoves:', possibleMoves);
     showPossibleMovesCSS(possibleMoves);
-    getTileElement(row, col).classList.add("selected-piece");
+    getTileElement(row, col).classList.add("selected-color");
     if (possibleMoves.length) {
-        selected.row = row;
-        selected.col = col;
+        selectedTile.row = row;
+        selectedTile.col = col;
     }
 }
 
 function handleClickMove(row, col, isEnPassant) {
-    selected.possibleMoves = [];
-    const pieceToMove = currentPosition[selected.row][selected.col];
+    selectedTile.possibleMoves = [];
+    const pieceToMove = currentPosition[selectedTile.row][selectedTile.col];
     movePiece(pieceToMove, row, col, isEnPassant);
 }
 
 function isValidMove(row, col) {
-    for (const move of selected.possibleMoves) {
+    for (const move of selectedTile.possibleMoves) {
         const { row: possibleRow, col: possibleCol, isEnPassant} = move;
-        if (possibleCol === col && possibleRow === row) return {validMove: true, isEnPassant: isEnPassant ? true : false};
+        if (possibleCol === col && possibleRow === row) return { validMove: true, isEnPassant: isEnPassant ? true : false };
     }
-    return {validMove: false, isEnPassant: false};
+    return { validMove: false, isEnPassant: false };
 }
 
 function getTileElement(row, col) {
@@ -177,24 +171,23 @@ function drawCurrentPosition() {
 }
 
 function showPossibleMovesCSS(possibleMoves) {
-    selected.possibleMoves = possibleMoves;
+    selectedTile.possibleMoves = possibleMoves;
     if (!possibleMoves.length) return;
-    for (const { row, col, attack } of possibleMoves) {
+    for (const { row, col, isAttack } of possibleMoves) {
         const tile = getTileElement(row, col);
-        const classString = attack ? "possible-attack" : "possible-move";
-        tile.classList.add(classString);
+        tile.classList.add(isAttack ? "possible-attack" : "possible-move");
     }
 }
 
 function clearPossibleMovesCSS() {
     const tilesToClear = document.querySelectorAll(
-        ".possible-move, .possible-attack, .selected-piece"
+        ".possible-move, .possible-attack, .selected-color"
     );
     for (const tile of tilesToClear) {
         tile.classList.remove(
             "possible-move",
             "possible-attack",
-            "selected-piece"
+            "selected-color"
         );
     }
 }

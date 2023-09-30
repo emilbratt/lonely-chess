@@ -2,7 +2,7 @@
     --light-tile-bg: hsl(205, 42%, 69%);
     --dark-tile-bg: hsl(180, 7%, 3%);
     --bg-color: hsl(205, 0%, 81%);
-    --tile-size: 100px;
+    --tile-size: 6rem;
     user-select: none;
 }
 
@@ -12,19 +12,15 @@ body {
     background-color: var(--bg-color);
 }
 
+#app {
+    display: flex;
+    justify-content: space-between;
+}
+
 #board {
     display: grid;
     grid-template-columns: repeat(8, var(--tile-size));
     grid-template-rows: repeat(8, var(--tile-size));
-}
-
-.tile {
-    font-size: 450%;
-    text-align: center;
-    background-color: var(--dark-tile-bg);
-}
-.tile:nth-child(odd) {
-    background-color: var(--light-tile-bg);
 }
 
 .white {
@@ -34,18 +30,27 @@ body {
     color: hsl(0, 0%, 100%);
 }
 
-.odd {
-    background-color: var(--light-tile-bg);
-}
-
-.odd:nth-child(odd) {
-    background-color: var(--dark-tile-bg);
-}
-
 .black {
     text-shadow: 1px 1px 0 white, 1px -1px 0 white, -1px -1px 0 white,
         -1px 1px 0 white;
     color: hsl(0, 0%, 0%);
+}
+
+.tile {
+    font-size: 4.5rem;
+    text-align: center;
+}
+
+.light-tile-color {
+    background-color: var(--light-tile-bg);
+}
+
+.dark-tile-color {
+    background-color: var(--dark-tile-bg);
+}
+
+.selected-color {
+    box-shadow: inset 0 0 0 50px rgba(0, 195, 255, 0.45);
 }
 
 .possible-attack {
@@ -63,8 +68,4 @@ body {
 .possible-move:hover {
     box-shadow: inset 0 0 0 50px rgba(0, 255, 64, 0.45),
         inset 0 0 8px rgb(0, 255, 0);
-}
-
-.selected-piece {
-    box-shadow: inset 0 0 0 50px rgba(0, 195, 255, 0.45);
 }
