@@ -43,7 +43,6 @@ function createStartingPosition() {
         createPawns(6, "white"),
         createBackline(7, "white"),
     ];
-    console.log(newBoard);
     return newBoard;
 }
 
@@ -112,7 +111,6 @@ function handleClick(row, col) {
     let piece = currentPosition[row][col];
     if (!piece) return;
     const possibleMoves = piece.getPossibleMoves(currentPosition);
-    console.log('possibleMoves:', possibleMoves);
     showPossibleMovesCSS(possibleMoves);
     getTileElement(row, col).classList.add("selected-color");
     if (possibleMoves.length) {

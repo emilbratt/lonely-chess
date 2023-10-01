@@ -226,10 +226,6 @@ class Pawn extends Piece {
     hasMoved = false;
     isEnPassantable = false;
     getPossibleMoves(_currentPosition) {
-        /*
-         * It only accounts for first move, normal move, and diagonal attack.
-         * Does NOT account for en passant, as we haven't even implemented moving pieces yet
-         */
         const moveDirections =
             this.color === "white"
                 ? [{ ...UP, collided: false }]
@@ -258,7 +254,6 @@ class Pawn extends Piece {
             _currentPosition
         );
         if (possibleEnPassant.isEnPassant) {
-            console.log("En passant possible!");
             return [...possibleMoves, ...possibleAttacks, possibleEnPassant];
         }
         return [...possibleMoves, ...possibleAttacks];
