@@ -81,9 +81,9 @@ function movePiece(piece, newRow, newCol, isEnPassant) {
         to: { row: newRow, col: newCol },
     });
     trackMoves.isWhiteTurn = !trackMoves.isWhiteTurn;
+    trackMoves.moveCount += 1;
     drawHistory();
     drawCurrentPosition();
-    trackMoves.moveCount += 1;
 }
 
 function createTilesHTML() {

@@ -9,26 +9,32 @@ const notationMatrix = [
     ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"],
 ];
 let historyAlgebraicNotation = [];
+const historyTitle = "Move piece to start";
 
 
 function addHistoryAlgebraicNotation() {
-    let index = trackMoves.moveCount; // we can use this to index the current move
-    const currentMove = trackMoves.history[index];
-    const {row: startRow, col: startCol} = currentMove.from;
-    const {row: endRow, col: endCol} = currentMove.to;
-    const startNotation = notationMatrix[startRow][startCol];
-    const endNotation = notationMatrix[endRow][endCol];
-    const moveString = `${index + 1}. ${currentMove.symbol} ${startNotation} to ${endNotation}`;
-    historyAlgebraicNotation.push(moveString);
+    let moveIndex = trackMoves.moveCount;
+    const currentMove = trackMoves.history[moveIndex - 1];
+    const fromNotation = notationMatrix[currentMove.from.row][currentMove.from.col];
+    const toNotation = notationMatrix[currentMove.to.row][currentMove.to.col];
+    const stringConcat = `${moveIndex}. ${currentMove.symbol} ${fromNotation} to ${toNotation}`;
+    historyAlgebraicNotation.push(stringConcat);
+    return stringConcat;
 }
 
 function drawHistory() {
-    addHistoryAlgebraicNotation();
-    const historyDiv = document.getElementById('history');
-    historyDiv.innerHTML= '';
-    for (let index = 0; index < historyAlgebraicNotation.length; index++) {
-        const moveDiv = document.createElement("div");
-        moveDiv.textContent = historyAlgebraicNotation[index];
-        historyDiv.append(moveDiv);
+    const history = document.getElementById("history");
+    const divElement = document.createElement("div");
+
+    if (!history.textContent) {
+        divElement.textContent = historyTitle;
+        history.append(divElement);
+    } else if (history.textContent === historyTitle) {
+        history.textContent = "";
+        divElement.textContent = addHistoryAlgebraicNotation();
+    } else {
+        divElement.textContent = addHistoryAlgebraicNotation();
     }
+
+    history.append(divElement);
 }

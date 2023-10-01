@@ -2,7 +2,9 @@
     --light-tile-bg: hsl(205, 42%, 69%);
     --dark-tile-bg: hsl(180, 7%, 3%);
     --bg-color: hsl(205, 0%, 81%);
-    --tile-size: 6rem;
+    --tile-width: 6rem;
+    --tile-height: 6rem;
+    --board-height: 48rem; /* 6 * 8 = 48 which aligns with tiles (8 each row) being 6 rem.. */
     user-select: none;
 }
 
@@ -12,15 +14,25 @@ body {
     background-color: var(--bg-color);
 }
 
-#app {
+#gameArea {
+    height: var(--board-height);
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
 }
 
 #board {
     display: grid;
-    grid-template-columns: repeat(8, var(--tile-size));
-    grid-template-rows: repeat(8, var(--tile-size));
+    grid-template-columns: repeat(8, var(--tile-width));
+    grid-template-rows: repeat(8, var(--tile-height));
+}
+
+#history {
+    width: 12rem;
+    padding: 1rem;
+    font-size: 1.3rem;
+    text-align: right;
+    background-color: rgb(174, 200, 181);
+    overflow-y:auto;
 }
 
 .white {
