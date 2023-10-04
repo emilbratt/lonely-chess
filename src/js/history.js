@@ -17,7 +17,11 @@ function addHistoryAlgebraicNotation() {
     const currentMove = trackMoves.history[moveIndex - 1];
     const fromNotation = notationMatrix[currentMove.from.row][currentMove.from.col];
     const toNotation = notationMatrix[currentMove.to.row][currentMove.to.col];
-    const stringConcat = `${moveIndex}. ${currentMove.symbol} ${fromNotation} to ${toNotation}`;
+    const stringConcat = `
+        ${moveIndex}.
+        <span style="color: ${currentMove.color};">${currentMove.symbol}</span>
+        ${fromNotation} to ${toNotation}
+    `;
     historyAlgebraicNotation.push(stringConcat);
     return stringConcat;
 }
@@ -27,13 +31,13 @@ function drawHistory() {
     const divElement = document.createElement("div");
 
     if (!history.textContent) {
-        divElement.textContent = historyTitle;
+        divElement.innerHTML = historyTitle;
         history.append(divElement);
     } else if (history.textContent === historyTitle) {
-        history.textContent = "";
-        divElement.textContent = addHistoryAlgebraicNotation();
+        history.innerHTML = "";
+        divElement.innerHTML = addHistoryAlgebraicNotation();
     } else {
-        divElement.textContent = addHistoryAlgebraicNotation();
+        divElement.innerHTML = addHistoryAlgebraicNotation();
     }
 
     history.append(divElement);

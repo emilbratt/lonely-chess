@@ -77,6 +77,7 @@ function movePiece(piece, newRow, newCol, isEnPassant) {
 
     trackMoves.history.push({
         symbol: piece.symbol,
+        color: piece.color,
         from: { row: oldRow, col: oldCol },
         to: { row: newRow, col: newCol },
     });
