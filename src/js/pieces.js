@@ -86,7 +86,6 @@ class Piece {
         return possibleMoves;
     }
 }
-
 class Rook extends Piece {
     symbol = UNICODE_PIECES.rook;
     getPossibleMoves(_currentPosition) {
@@ -130,7 +129,6 @@ class Bishop extends Piece {
         );
     }
 }
-
 class Knight extends Piece {
     symbol = UNICODE_PIECES.knight;
     getPossibleMoves(_currentPosition) {

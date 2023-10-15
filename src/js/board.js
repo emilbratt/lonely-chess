@@ -43,6 +43,7 @@ function createStartingPosition() {
         createPawns(6, "white"),
         createBackline(7, "white"),
     ];
+    newBoard[1][0] = new Pawn(1, 0, 'white'); // NOTE: remove when issue promote pawn is solved
     return newBoard;
 }
 
@@ -83,10 +84,10 @@ function movePiece(piece, newRow, newCol, isEnPassant) {
     });
     trackMoves.isWhiteTurn = !trackMoves.isWhiteTurn;
     trackMoves.moveCount += 1;
+    promoteCheck(piece);
     drawHistory();
     drawCurrentPosition();
 }
-
 function createTilesHTML() {
     for (let row = 0; row < currentPosition.length; row++) {
         for (let col = 0; col < currentPosition[0].length; col++) {
@@ -136,7 +137,6 @@ function isValidMove(row, col) {
     }
     return { validMove: false, isEnPassant: false };
 }
-
 function getTileElement(row, col) {
     return document.getElementById(`${row}-${col}`);
 }
