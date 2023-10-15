@@ -8,37 +8,33 @@ const notationMatrix = [
     ["a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"],
     ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"],
 ];
-let historyAlgebraicNotation = [];
-const historyTitle = "Move piece to start";
 
+function getNextHistoryAlgebraicNotation() {
+    const divElement = document.createElement("div");
+    const spanElement = document.createElement("span");
 
-function addHistoryAlgebraicNotation() {
-    let moveIndex = trackMoves.moveCount;
+    const moveIndex = trackMoves.moveCount;
     const currentMove = trackMoves.history[moveIndex - 1];
-    const fromNotation = notationMatrix[currentMove.from.row][currentMove.from.col];
+    const fromNotation =
+        notationMatrix[currentMove.from.row][currentMove.from.col];
     const toNotation = notationMatrix[currentMove.to.row][currentMove.to.col];
-    const stringConcat = `
-        ${moveIndex}.
-        <span style="color: ${currentMove.color};">${currentMove.symbol}</span>
-        ${fromNotation} to ${toNotation}
-    `;
-    historyAlgebraicNotation.push(stringConcat);
-    return stringConcat;
+
+    divElement.textContent = `${moveIndex}.`;
+    spanElement.style.color = currentMove.color;
+    spanElement.textContent += currentMove.symbol;
+    divElement.append(spanElement);
+    divElement.innerHTML += `${fromNotation} to ${toNotation}`;
+    return divElement;
 }
 
 function drawHistory() {
     const history = document.getElementById("history");
-    const divElement = document.createElement("div");
 
-    if (!history.textContent) {
-        divElement.innerHTML = historyTitle;
-        history.append(divElement);
-    } else if (history.textContent === historyTitle) {
+    if (trackMoves.moveCount === 0) {
+        history.innerHTML = "Move piece to start";
+        return;
+    } else if (trackMoves.moveCount === 1) {
         history.innerHTML = "";
-        divElement.innerHTML = addHistoryAlgebraicNotation();
-    } else {
-        divElement.innerHTML = addHistoryAlgebraicNotation();
     }
-
-    history.append(divElement);
+    history.append(getNextHistoryAlgebraicNotation());
 }
