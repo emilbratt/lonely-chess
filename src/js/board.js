@@ -70,7 +70,7 @@ function movePiece(piece, newRow, newCol, isEnPassant) {
     piece.setPosition(newRow, newCol);
     currentPosition[oldRow][oldCol] = null;
     if (isEnPassant) {
-        if (piece.color === 'white') currentPosition[newRow + 1][newCol] = null;
+        if (piece.color === "white") currentPosition[newRow + 1][newCol] = null;
         else currentPosition[newRow - 1][newCol] = null;
     }
     currentPosition[newRow][newCol] = piece;
@@ -93,7 +93,9 @@ function createTilesHTML() {
             tile = document.createElement("div");
             tile.id = createIdString(row, col);
             tile.classList.add("tile");
-            ((col+row) % 2) === 0 ? tile.classList.add("light-tile-color") : tile.classList.add("dark-tile-color");
+            (col + row) % 2 === 0
+                ? tile.classList.add("light-tile-color")
+                : tile.classList.add("dark-tile-color");
             tile.addEventListener("mousedown", () => {
                 handleClick(row, col);
             });
@@ -104,7 +106,7 @@ function createTilesHTML() {
 
 function handleClick(row, col) {
     clearPossibleMovesCSS();
-    const {validMove, isEnPassant} = isValidMove(row, col);
+    const { validMove, isEnPassant } = isValidMove(row, col);
     if (validMove) {
         handleClickMove(row, col, isEnPassant);
         return;
@@ -128,8 +130,9 @@ function handleClickMove(row, col, isEnPassant) {
 
 function isValidMove(row, col) {
     for (const move of selectedTile.possibleMoves) {
-        const { row: possibleRow, col: possibleCol, isEnPassant} = move;
-        if (possibleCol === col && possibleRow === row) return { validMove: true, isEnPassant: isEnPassant ? true : false };
+        const { row: possibleRow, col: possibleCol, isEnPassant } = move;
+        if (possibleCol === col && possibleRow === row)
+            return { validMove: true, isEnPassant: isEnPassant ? true : false };
     }
     return { validMove: false, isEnPassant: false };
 }
