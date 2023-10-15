@@ -88,6 +88,7 @@ function movePiece(piece, newRow, newCol, isEnPassant) {
     drawHistory();
     drawCurrentPosition();
 }
+
 function createTilesHTML() {
     for (let row = 0; row < currentPosition.length; row++) {
         for (let col = 0; col < currentPosition[0].length; col++) {
