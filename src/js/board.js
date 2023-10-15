@@ -83,13 +83,17 @@ function movePiece(piece, newRow, newCol, isEnPassant) {
         to: { row: newRow, col: newCol },
     });
     trackMoves.isWhiteTurn = !trackMoves.isWhiteTurn;
-    trackMoves.moveCount += 1;
-    promoteCheck(piece);
+    trackMoves.moveCount++;
     drawHistory();
-    drawCurrentPosition();
+    if (pawnPromotionCheck(piece)) {
+        createPromotionTilesHTML(piece);
+    } else {
+        drawCurrentPosition();
+    }
 }
 
 function createTilesHTML() {
+    board.textContent = '';
     for (let row = 0; row < currentPosition.length; row++) {
         for (let col = 0; col < currentPosition[0].length; col++) {
             tile = document.createElement("div");
@@ -160,12 +164,10 @@ function drawCurrentPosition() {
             const currentPiece = currentPosition[row][col];
             const currentTileElement = getTileElement(row, col);
             if (currentPiece) {
-                const pieceText = currentPiece.symbol;
                 const IS_WHITE = currentPiece.color === "white";
-                const IS_BLACK = !IS_WHITE;
-                currentTileElement.textContent = pieceText;
+                currentTileElement.textContent = currentPiece.symbol;
                 currentTileElement.classList.toggle("white", IS_WHITE);
-                currentTileElement.classList.toggle("black", IS_BLACK);
+                currentTileElement.classList.toggle("black", !IS_WHITE);
             } else {
                 currentTileElement.textContent = "";
             }
