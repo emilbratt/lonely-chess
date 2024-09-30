@@ -103,7 +103,7 @@ class Rook extends Piece {
             MIN_MOVES,
             MAX_MOVES,
             directions,
-            _currentPosition
+            _currentPosition,
         );
     }
 }
@@ -125,7 +125,7 @@ class Bishop extends Piece {
             MIN_MOVES,
             MAX_MOVES,
             directions,
-            _currentPosition
+            _currentPosition,
         );
     }
 }
@@ -189,7 +189,7 @@ class Queen extends Piece {
             MIN_MOVES,
             MAX_MOVES,
             directions,
-            _currentPosition
+            _currentPosition,
         );
     }
 }
@@ -214,7 +214,7 @@ class King extends Piece {
             MIN_MOVES,
             MAX_MOVES,
             directions,
-            _currentPosition
+            _currentPosition,
         );
     }
 }
@@ -241,15 +241,15 @@ class Pawn extends Piece {
             MIN_MOVES,
             MAX_MOVES,
             moveDirections,
-            _currentPosition
+            _currentPosition,
         );
         const possibleAttacks = this.getPossibleAttacks(
             attackDirections,
-            _currentPosition
+            _currentPosition,
         );
         const possibleEnPassant = this.getPossibleEnPassant(
             enPassantDirections,
-            _currentPosition
+            _currentPosition,
         );
         if (possibleEnPassant.isEnPassant) {
             return [...possibleMoves, ...possibleAttacks, possibleEnPassant];
@@ -260,7 +260,7 @@ class Pawn extends Piece {
         minMoves,
         maxMoves,
         directions,
-        _currentPosition
+        _currentPosition,
     ) {
         const possibleMoves = [];
         for (let i = minMoves; i <= maxMoves; i++) {
@@ -312,11 +312,13 @@ class Pawn extends Piece {
             if (!tileBeingChecked) continue;
             if (tileBeingChecked.symbol !== UNICODE_PIECES.pawn) continue;
             if (tileBeingChecked.isEnPassantable) {
-                return { 
+                return {
                     col: newCol,
-                    row: this.row + (tileBeingChecked.color === 'white' ? + 1 : - 1),
+                    row:
+                        this.row +
+                        (tileBeingChecked.color === "white" ? +1 : -1),
                     isAttack: true,
-                    isEnPassant: true
+                    isEnPassant: true,
                 };
             }
         }
